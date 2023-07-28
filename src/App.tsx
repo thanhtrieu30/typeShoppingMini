@@ -1,11 +1,9 @@
 import './App.css'
+import useRouterElements from './useRouterElements'
 
 function App() {
-  return (
-    <>
-      <h1 className='bg-red-300'>hello</h1>
-    </>
-  )
+  const routerElements = useRouterElements()
+  return <div>{routerElements}</div>
 }
 
 export default App
