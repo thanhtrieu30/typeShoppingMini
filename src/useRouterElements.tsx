@@ -5,6 +5,7 @@ import Register from './pages/register/Register'
 import { useRoutes } from 'react-router-dom'
 
 export default function useRouterElements() {
+  // hook routes
   const routerElements = useRoutes([
     {
       path: '/',
