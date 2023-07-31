@@ -18,7 +18,7 @@ export default function Login() {
               type='email'
               name='email'
               placeholder='Email'
-              className='p-2  w-full outline-none border-orange border mt-5 focus:shadow-md'
+              className='p-2  w-full outline-none border-gray-300 border mt-5 focus:shadow-md'
             />
             {/* <div className='text-xs mt-1 text-red-600 ml-3'>Email không hợp lệ !</div> */}
           </div>
@@ -27,7 +27,7 @@ export default function Login() {
               type='password'
               name='password'
               placeholder='Password'
-              className='p-2  w-full outline-none border-orange border mt-3 focus:shadow-md'
+              className='p-2  w-full outline-none border-gray-300 border mt-3 focus:shadow-md'
             />
           </div>
           <div>
