@@ -1,13 +1,10 @@
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
 import Input from 'src/components/input'
-import { getRules } from 'src/rules/rules'
+import { schema, Schema } from 'src/rules/rules'
+import { yupResolver } from '@hookform/resolvers/yup'
 
-interface TypeForm {
-  email: string
-  password: string
-  confirm_Password: string
-}
+type TypeForm = Schema
 
 export default function Register() {
   const {
@@ -15,9 +12,11 @@ export default function Register() {
     handleSubmit,
     getValues,
     formState: { errors }
-  } = useForm<TypeForm>()
+  } = useForm<TypeForm>({
+    resolver: yupResolver(schema)
+  })
 
-  const rules = getRules(getValues)
+  // const rules = getRules(getValues)
   const onSubmit = handleSubmit(
     (data) => {
       console.log(data)
@@ -45,7 +44,7 @@ export default function Register() {
             register={register}
             errorMessage={errors.email?.message}
             name='email'
-            rules={rules.email}
+            // rules={rules.email}
             autocomplete='on'
             // className='p-2  w-full outline-none border-gray-300 border mt-4 focus:shadow-md'
           />
@@ -55,7 +54,7 @@ export default function Register() {
             register={register}
             errorMessage={errors.password?.message}
             name='password'
-            rules={rules.password}
+            // rules={rules.password}
             autocomplete='on'
             // className='p-2  w-full outline-none border-gray-300 border mt-4 focus:shadow-md'
           />
@@ -65,7 +64,7 @@ export default function Register() {
             register={register}
             errorMessage={errors.confirm_Password?.message}
             name='confirm_Password'
-            rules={rules.confirm_password}
+            // rules={rules.confirm_password}
             autocomplete='on'
             // className='p-2  w-full outline-none border-gray-300 border mt-4 focus:shadow-md'
           />
