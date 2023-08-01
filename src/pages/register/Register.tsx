@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom'
 import Input from 'src/components/input'
 import { schema, Schema } from 'src/rules/rules'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+import { registerAccount } from 'src/api/auth.api'
+import { omit } from 'lodash'
 
 type TypeForm = Schema
 
@@ -10,22 +13,23 @@ export default function Register() {
   const {
     register,
     handleSubmit,
-    getValues,
     formState: { errors }
   } = useForm<TypeForm>({
     resolver: yupResolver(schema)
   })
 
-  // const rules = getRules(getValues)
-  const onSubmit = handleSubmit(
-    (data) => {
-      console.log(data)
-    },
-    () => {
-      const password = getValues('password')
-      console.log(password)
-    }
-  )
+  const registerAccountMutation = useMutation({
+    mutationFn: (body: Omit<TypeForm, 'confirm_Password'>) => registerAccount(body)
+  })
+
+  const onSubmit = handleSubmit((data) => {
+    const body = omit(data, ['confirm_Password'])
+    registerAccountMutation.mutate(body, {
+      onSuccess: (data) => {
+        console.log(data)
+      }
+    })
+  })
   return (
     <div className='mt-10 max-h-full max-w-4xl px-12 lg:px-0 lg:max-w-6xl m-auto rounded shadow-lg grid grid-cols-1 lg:grid-cols-2'>
       <div>
