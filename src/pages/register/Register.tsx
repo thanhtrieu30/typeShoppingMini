@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
-import { rules } from 'src/rules/rules'
+import Input from 'src/components/input'
+import { getRules } from 'src/rules/rules'
 
 interface TypeForm {
   email: string
@@ -12,11 +13,20 @@ export default function Register() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors }
   } = useForm<TypeForm>()
-  const onSubmit = handleSubmit((data) => {
-    console.log(data)
-  })
+
+  const rules = getRules(getValues)
+  const onSubmit = handleSubmit(
+    (data) => {
+      console.log(data)
+    },
+    () => {
+      const password = getValues('password')
+      console.log(password)
+    }
+  )
   return (
     <div className='mt-10 max-h-full max-w-4xl px-12 lg:px-0 lg:max-w-6xl m-auto rounded shadow-lg grid grid-cols-1 lg:grid-cols-2'>
       <div>
@@ -29,33 +39,37 @@ export default function Register() {
       <div className='px-12'>
         <div className='text-lg font-normal text-center'>Đăng ký</div>
         <form onSubmit={onSubmit}>
-          <div>
-            <input
-              type='email'
-              placeholder='Email'
-              {...register('email', rules.email)}
-              className='p-2  w-full outline-none border-gray-300 border mt-4 focus:shadow-md'
-            />
-            <div className='text-xs mt-1 text-red-600 ml-3'>{errors.email?.message}</div>
-          </div>
-          <div>
-            <input
-              type='password'
-              placeholder='Password'
-              {...register('password', rules.password)}
-              className='p-2  w-full outline-none border-gray-300 border mt-2 focus:shadow-md'
-            />
-            <div className='text-xs mt-1 text-red-600 ml-3'>{errors.password?.message}</div>
-          </div>
-          <div>
-            <input
-              type='password'
-              placeholder='Nhập lại Password'
-              {...register('confirm_Password', rules.confirm_password)}
-              className='p-2  w-full outline-none border-gray-300 border focus:shadow-md mt-2'
-            />
-            <div className='text-xs mt-1 text-red-600 ml-3'>{errors.confirm_Password?.message}</div>
-          </div>
+          <Input
+            type='email'
+            placeholder='Email'
+            register={register}
+            errorMessage={errors.email?.message}
+            name='email'
+            rules={rules.email}
+            autocomplete='on'
+            // className='p-2  w-full outline-none border-gray-300 border mt-4 focus:shadow-md'
+          />
+          <Input
+            type='password'
+            placeholder='Password'
+            register={register}
+            errorMessage={errors.password?.message}
+            name='password'
+            rules={rules.password}
+            autocomplete='on'
+            // className='p-2  w-full outline-none border-gray-300 border mt-4 focus:shadow-md'
+          />
+          <Input
+            type='password'
+            placeholder='Nhập lại Password'
+            register={register}
+            errorMessage={errors.confirm_Password?.message}
+            name='confirm_Password'
+            rules={rules.confirm_password}
+            autocomplete='on'
+            // className='p-2  w-full outline-none border-gray-300 border mt-4 focus:shadow-md'
+          />
+
           <div>
             <button type='submit' className='mt-3 w-full p-2 text-center bg-orange text-white '>
               Đăng ký
