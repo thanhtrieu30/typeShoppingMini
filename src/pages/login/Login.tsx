@@ -1,6 +1,52 @@
+import { yupResolver } from '@hookform/resolvers/yup'
+import { useMutation } from '@tanstack/react-query'
+
+import { useForm } from 'react-hook-form'
 import { Link } from 'react-router-dom'
+import { loginAccount } from 'src/api/auth.api'
+import Input from 'src/components/input'
+import { Schema, schema } from 'src/rules/rules'
+import { ResponseAPI } from 'src/types/utils.type'
+import { isAxiosUnprocessableEntityError } from 'src/utils/utils'
+
+type TypeForm = Omit<Schema, 'confirm_Password'>
+const loginSchema = schema.omit(['confirm_Password'])
 
 export default function Login() {
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors }
+  } = useForm<TypeForm>({
+    resolver: yupResolver(loginSchema)
+  })
+
+  const loginAccountMutation = useMutation({
+    mutationFn: (body: Omit<TypeForm, 'confirm_Password'>) => loginAccount(body)
+  })
+
+  const onSubmit = handleSubmit((data) => {
+    loginAccountMutation.mutate(data, {
+      onSuccess: (data) => {
+        console.log(data)
+      },
+      onError: (error) => {
+        if (isAxiosUnprocessableEntityError<ResponseAPI<TypeForm>>(error)) {
+          const formError = error.response?.data.data
+          if (formError) {
+            Object.keys(formError).forEach((key) => {
+              setError(key as keyof TypeForm, {
+                message: formError[key as keyof Omit<TypeForm, 'confirm_Password'>],
+                type: 'Server'
+              })
+            })
+          }
+        }
+      }
+    })
+  })
+
   return (
     <div className='mt-10 max-h-full max-w-4xl px-12 lg:px-0 lg:max-w-6xl m-auto rounded shadow-lg grid grid-cols-1 lg:grid-cols-2'>
       <div>
@@ -12,24 +58,28 @@ export default function Login() {
       </div>
       <div className='px-12'>
         <div className='text-lg font-normal text-center'>Đăng nhập</div>
-        <form>
-          <div>
-            <input
-              type='email'
-              name='email'
-              placeholder='Email'
-              className='p-2  w-full outline-none border-gray-300 border mt-5 focus:shadow-md'
-            />
-            {/* <div className='text-xs mt-1 text-red-600 ml-3'>Email không hợp lệ !</div> */}
-          </div>
-          <div>
-            <input
-              type='password'
-              name='password'
-              placeholder='Password'
-              className='p-2  w-full outline-none border-gray-300 border mt-3 focus:shadow-md'
-            />
-          </div>
+        <form onSubmit={onSubmit}>
+          <Input
+            type='email'
+            placeholder='Email'
+            register={register}
+            errorMessage={errors.email?.message}
+            name='email'
+            // rules={rules.email}
+            autocomplete='on'
+            // className='p-2  w-full outline-none border-gray-300 border mt-4 focus:shadow-md'
+          />
+          <Input
+            type='password'
+            placeholder='Password'
+            register={register}
+            errorMessage={errors.password?.message}
+            name='password'
+            // rules={rules.password}
+            autocomplete='on'
+            // className='p-2  w-full outline-none border-gray-300 border mt-4 focus:shadow-md'
+          />
+
           <div>
             <button className='mt-3 w-full p-2 text-center bg-orange text-white '>Đăng nhập</button>
           </div>
