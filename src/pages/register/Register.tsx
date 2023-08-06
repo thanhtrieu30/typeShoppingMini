@@ -20,7 +20,7 @@ export default function Register() {
   } = useForm<TypeForm>({
     resolver: yupResolver(schema)
   })
-
+  // logic register
   const registerAccountMutation = useMutation({
     mutationFn: (body: Omit<TypeForm, 'confirm_Password'>) => registerAccount(body)
   })
